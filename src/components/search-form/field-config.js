@@ -6,17 +6,19 @@ import PersonIcon from '@mui/icons-material/Person'
 export const SEARCH_FIELDS = {
   origin: {
     label: 'Origin',
-    placeholder: 'e.g. EVN',
-    helperTextDefault: 'Airport code or city',
+    placeholder: 'city or airport (e.g. Yerevan)',
+    helperTextDefault: 'Select a location from the list',
     icon: FlightTakeoffIcon,
     transform: (value) => value.toUpperCase(),
+    isAutocomplete: true,
   },
   destination: {
     label: 'Destination',
-    placeholder: 'e.g. CDG',
-    helperTextDefault: 'Airport code or city',
+    placeholder: 'city or airport (e.g. London)',
+    helperTextDefault: 'Select a location from the list',
     icon: FlightLandIcon,
     transform: (value) => value.toUpperCase(),
+    isAutocomplete: true,
   },
   departDate: {
     label: 'Departure date',

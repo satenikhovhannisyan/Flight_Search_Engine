@@ -1,10 +1,17 @@
 import { Container, Stack, Typography } from '@mui/material'
 import SearchForm from '../components/search-form/search-form'
+import { searchFlights } from '../api/amadeus'
 
 export default function Home() {
-  const handleSearch = (payload) => {
-    console.log('search payload:', payload)
+  
+  const handleSearch = async (payload) => {
+  try {
+    const data = await searchFlights(payload)
+    console.log('Amadeus response:', data)
+  } catch (err) {
+    console.error(err)
   }
+}
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>

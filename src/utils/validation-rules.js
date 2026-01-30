@@ -4,6 +4,11 @@ export const validateSearchForm = (values) => {
     if (!values.destination?.trim()) e.destination = 'Required'
     if (!values.departDate) e.departDate = 'Required'
     if (!values.adults || Number(values.adults) < 1) e.adults = 'Min 1'
+    const isIata = (v) => /^[A-Z]{3}$/.test((v || '').trim())
+
+    if (!isIata(values.origin)) e.origin = 'Pick a location (IATA code required)'
+    if (!isIata(values.destination)) e.destination = 'Pick a location (IATA code required)'
+
     if (values.origin?.trim()
         && values.destination?.trim()
         && values.origin.trim() === values.destination.trim()
