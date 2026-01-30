@@ -1,17 +1,12 @@
+import { useState } from 'react'
 import { Container, Stack, Typography } from '@mui/material'
 import SearchForm from '../components/search-form/search-form'
-import { searchFlights } from '../api/amadeus'
+import FlightList from '../components/flight-list/flight-list'
+import useFlights from '../hooks/use-flights'
 
 export default function Home() {
-  
-  const handleSearch = async (payload) => {
-  try {
-    const data = await searchFlights(payload)
-    console.log('Amadeus response:', data)
-  } catch (err) {
-    console.error(err)
-  }
-}
+  const [searchParams, setSearchParams] = useState(null)
+  const { flights, loading, error } = useFlights(searchParams)
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -25,8 +20,9 @@ export default function Home() {
           </Typography>
         </Stack>
 
-        <SearchForm onSearch={handleSearch} />
+        <SearchForm onSearch={setSearchParams} onReset={() => setSearchParams(null)} />
 
+        <FlightList flights={flights} loading={loading} error={error} />
       </Stack>
     </Container>
   )

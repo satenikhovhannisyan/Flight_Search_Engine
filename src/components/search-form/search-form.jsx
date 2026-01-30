@@ -12,7 +12,7 @@ import { getAllTouched } from '../../utils/helpers'
 import useLocationSearch from '../../hooks/use-location-search'
 import SearchFormAutocomplete from './search-form-autocomplete'
 
-export default function SearchForm({ onSearch }) {
+export default function SearchForm({ onSearch, onReset }) {
   const [form, setForm] = useState(initialForm)
   const [touched, setTouched] = useState({})
   const [originInput, setOriginInput] = useState('')
@@ -155,11 +155,13 @@ export default function SearchForm({ onSearch }) {
         </Stack>
 
         <SearchFormActions
+
           onReset={() => {
             setForm(initialForm)
             setTouched({})
             setOriginInput('')
             setDestinationInput('')
+            onReset?.()   // 👈 notify parent
           }}
         />
       </Stack>
