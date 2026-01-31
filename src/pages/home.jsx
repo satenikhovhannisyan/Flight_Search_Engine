@@ -1,12 +1,32 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Container, Stack, Typography } from '@mui/material'
 import SearchForm from '../components/search-form/search-form'
 import FlightList from '../components/flight-list/flight-list'
 import useFlights from '../hooks/use-flights'
+import Filters from '../components/filters/filters'
 
 export default function Home() {
   const [searchParams, setSearchParams] = useState(null)
+  const [filters, setFilters] = useState({
+    maxPrice: null,
+    stops: 'any', 
+    airlines: [],
+  })
+
   const { flights, loading, error } = useFlights(searchParams)
+  const filteredFlights = useMemo(() => {
+    return flights.filter((f) => {
+      if (filters.maxPrice != null && f.price > filters.maxPrice) return false
+      if (filters.stops !== 'any' && f.stops !== filters.stops) return false
+      if (
+        filters.airlines.length &&
+        !filters.airlines.some((a) => f.airlineCodes.includes(a))
+      )
+        return false
+      return true
+    })
+  }, [flights, filters])
+
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -22,7 +42,17 @@ export default function Home() {
 
         <SearchForm onSearch={setSearchParams} onReset={() => setSearchParams(null)} />
 
-        <FlightList flights={flights} loading={loading} error={error} />
+        <Filters
+          flights={flights}
+          filters={filters}
+          onChange={setFilters}
+        />
+
+        <FlightList
+          flights={filteredFlights}
+          loading={loading}
+          error={error}
+        />
       </Stack>
     </Container>
   )
