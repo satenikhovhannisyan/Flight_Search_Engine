@@ -4,12 +4,13 @@ import SearchForm from '../components/search-form/search-form'
 import FlightList from '../components/flight-list/flight-list'
 import useFlights from '../hooks/use-flights'
 import Filters from '../components/filters/filters'
+import PriceGraph from '../components/price-graph/price-graph'
 
 export default function Home() {
   const [searchParams, setSearchParams] = useState(null)
   const [filters, setFilters] = useState({
     maxPrice: null,
-    stops: 'any', 
+    stops: 'any',
     airlines: [],
   })
 
@@ -47,6 +48,8 @@ export default function Home() {
           filters={filters}
           onChange={setFilters}
         />
+
+        <PriceGraph flights={filteredFlights} />
 
         <FlightList
           flights={filteredFlights}
