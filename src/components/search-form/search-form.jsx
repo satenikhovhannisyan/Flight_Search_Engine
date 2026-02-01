@@ -1,25 +1,21 @@
 import { useState, useCallback } from 'react'
+import dayjs from 'dayjs'
 import { Paper, Stack } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
-import dayjs from 'dayjs'
 import SearchFormField from './search-form-field'
 import SearchFormActions from './search-form-actions'
 import { initialForm } from '../../utils/constants'
 import { SEARCH_FIELDS } from './field-config'
 import useValidation from '../../hooks/use-search-validation'
-import { validateSearchForm } from '../../utils/validation-rules'
+import { validateSearchForm } from '../../utils/helpers'
 import { getAllTouched } from '../../utils/helpers'
-import useLocationSearch from '../../hooks/use-location-search'
 import SearchFormAutocomplete from './search-form-autocomplete'
 
-export default function SearchForm({ onSearch, onReset }) {
+export default function SearchForm({ updateParams }) {
   const [form, setForm] = useState(initialForm)
   const [touched, setTouched] = useState({})
   const [originInput, setOriginInput] = useState('')
   const [destinationInput, setDestinationInput] = useState('')
-
-  const { options: originOptions, loading: originLoading } = useLocationSearch(originInput)
-  const { options: destinationOptions, loading: destinationLoading } = useLocationSearch(destinationInput)
 
   const getLocationLabel = (opt) => {
     if (!opt) return ''
@@ -49,7 +45,7 @@ export default function SearchForm({ onSearch, onReset }) {
       return
     }
 
-    onSearch?.({
+    updateParams?.({
       ...form,
       origin: form.origin.trim().toUpperCase(),
       destination: form.destination.trim().toUpperCase(),
@@ -58,51 +54,41 @@ export default function SearchForm({ onSearch, onReset }) {
   }
 
   return (
-    <Paper component="form" onSubmit={handleSubmit} variant="outlined" sx={{ p: 2 }}>
+    <Paper component="form" onSubmit={handleSubmit} variant="outlined" sx={{ p: 3 }}>
       <Stack spacing={2}>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems="stretch">
-          <SearchFormAutocomplete
-            fieldKey="origin"
-            config={SEARCH_FIELDS.origin}
-            inputValue={originInput}
-            options={originOptions}
-            loading={originLoading}
-            error={errors.origin}
-            onInputChange={(e, value, reason) => {
-              if (reason === 'reset') return
-              setOriginInput(value)
-              setField('origin', '')
-            }}
-            onChange={(e, value) => {
-              setField('origin', value?.iataCode || '')
-              setOriginInput(value ? getLocationLabel(value) : '')
-            }}
-            getOptionLabel={getLocationLabel}
-            filterOptions={(x) => x}
-            onBlur={handleBlur}
-          />
-
-          <SearchFormAutocomplete
-            fieldKey="destination"
-            config={SEARCH_FIELDS.destination}
-            inputValue={destinationInput}
-            options={destinationOptions}
-            loading={destinationLoading}
-            error={errors.destination}
-            onInputChange={(e, value, reason) => {
-              if (reason === 'reset') return
-              setDestinationInput(value)
-              setField('destination', '')
-            }}
-            onChange={(e, value) => {
-              setField('destination', value?.iataCode || '')
-              setDestinationInput(value ? getLocationLabel(value) : '')
-            }}
-            getOptionLabel={getLocationLabel}
-            filterOptions={(x) => x}
-            onBlur={handleBlur}
-          />
-
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="stretch">
+          {['origin', 'destination'].map((fieldKey) => {
+            return (
+              <SearchFormAutocomplete
+                key={fieldKey}
+                fieldKey={fieldKey}
+                errors={errors}
+                inputValue={fieldKey === 'origin' ? originInput : destinationInput}
+                onInputChange={(e, value, reason) => {
+                  if (reason !== 'input') return 
+                  setField(fieldKey, '')
+                  if (fieldKey === 'origin') {
+                    setOriginInput(value)
+                  } else {
+                    setDestinationInput(value)
+                  }
+                }}
+                onChange={(e, value) => {
+                  if (fieldKey === 'origin') {
+                    setField('origin', value?.iataCode || '')
+                    setOriginInput(value?.iataCode || '')
+                  } else {
+                    setField('destination', value?.iataCode || '')
+                    setDestinationInput(value?.iataCode || '')
+                  } 
+                }}
+                getOptionLabel={getLocationLabel}
+                filterOptions={(x) => x}
+                onBlur={() => handleBlur(fieldKey)}
+              />
+            ) 
+          }
+          )}
         </Stack>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
           <DatePicker
@@ -155,13 +141,12 @@ export default function SearchForm({ onSearch, onReset }) {
         </Stack>
 
         <SearchFormActions
-
           onReset={() => {
             setForm(initialForm)
             setTouched({})
             setOriginInput('')
             setDestinationInput('')
-            onReset?.()   // 👈 notify parent
+            updateParams?.(null)
           }}
         />
       </Stack>

@@ -8,12 +8,11 @@ export default function useLocationSearch(inputValue) {
 
     useEffect(() => {
         const q = (inputValue || '').trim()
-        if (q.length < 2) {
+        if (q.length < 2 || q.length > 30) {
             setOptions([])
             setLoading(false)
             return
         }
-
         let isActive = true
         setLoading(true)
 

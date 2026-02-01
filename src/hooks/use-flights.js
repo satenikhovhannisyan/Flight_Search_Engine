@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { searchFlights } from '../api/amadeus'
-import { normalizeFlightOffers } from '../utils/normalize'
+import { normalizeFlightOffers } from '../utils/helpers'
 
 export default function useFlights(searchParams) {
   const [flights, setFlights] = useState([])

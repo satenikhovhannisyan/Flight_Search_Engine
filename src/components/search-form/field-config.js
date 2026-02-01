@@ -7,7 +7,6 @@ export const SEARCH_FIELDS = {
   origin: {
     label: 'Origin',
     placeholder: 'city or airport (e.g. Yerevan)',
-    helperTextDefault: 'Select a location from the list',
     icon: FlightTakeoffIcon,
     transform: (value) => value.toUpperCase(),
     isAutocomplete: true,
@@ -15,7 +14,6 @@ export const SEARCH_FIELDS = {
   destination: {
     label: 'Destination',
     placeholder: 'city or airport (e.g. London)',
-    helperTextDefault: 'Select a location from the list',
     icon: FlightLandIcon,
     transform: (value) => value.toUpperCase(),
     isAutocomplete: true,

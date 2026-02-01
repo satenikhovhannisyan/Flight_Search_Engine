@@ -20,7 +20,7 @@ export default function Filters({ flights, filters, onChange }) {
   )
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} sx={{ backgroundColor: 'background.paper', p: 2, borderRadius: 2, flex: '0 0 300px' }}>
       <Typography variant="subtitle1" fontWeight={600}>
         Filters
       </Typography>
@@ -59,22 +59,26 @@ export default function Filters({ flights, filters, onChange }) {
       </FormControl>
 
       {/* Airlines */}
-      <Stack direction="row" spacing={1} flexWrap="wrap">
-        {airlines.map((a) => (
-          <Chip
-            key={a}
-            label={a}
-            clickable
-            color={filters.airlines.includes(a) ? 'primary' : 'default'}
-            onClick={() => {
-              const next = filters.airlines.includes(a)
-                ? filters.airlines.filter((x) => x !== a)
-                : [...filters.airlines, a]
-              onChange({ ...filters, airlines: next })
-            }}
-          />
-        ))}
-      </Stack>
+      <Box>
+        <Typography gutterBottom>Airlines</Typography>
+        <Stack direction="row" spacing={1} flexWrap="wrap">
+          {airlines.map((a) => (
+            <Chip
+              key={a}
+              label={a}
+              clickable
+              color={filters.airlines.includes(a) ? 'primary' : 'default'}
+              onClick={() => {
+                const next = filters.airlines.includes(a)
+                  ? filters.airlines.filter((x) => x !== a)
+                  : [...filters.airlines, a]
+                onChange({ ...filters, airlines: next })
+              }}
+            />
+          ))}
+        </Stack>
+      </Box>
+
     </Stack>
   )
 }
