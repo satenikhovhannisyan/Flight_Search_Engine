@@ -38,7 +38,7 @@ export default function Home() {
   }, [flights, filters])
 
   const visibleFlights = filteredFlights.slice(0, visibleCount)
-  const canShowMore = visibleCount < filteredFlights.length
+  const canShowMore = visibleCount < filteredFlights.length && !loading;
 
   useEffect(() => {
     hasSearched = Boolean(searchParams);   
